@@ -55,7 +55,7 @@ export const DATA = {
       {
         "icon": "🗣️",
         "label": "Languages",
-        "value": "Amharic (native), English (C2), Germany (A1-A2)"
+        "value": "Amharic (native), English (C1), Germany (A1-A2)"
       },
       {
         "icon": "🎯",
