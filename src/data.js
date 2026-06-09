@@ -30,11 +30,11 @@ export const DATA = {
     ],
     "stats": [
       {
-        "number": "6+",
+        "number": "4+",
         "label": "Years in IT"
       },
       {
-        "number": "3",
+        "number": "5",
         "label": "Certifications"
       },
       {
@@ -55,12 +55,12 @@ export const DATA = {
       {
         "icon": "🗣️",
         "label": "Languages",
-        "value": "Amharic (native), English (C1-C2)"
+        "value": "Amharic (native), English (C2), Germany (A1-A2)"
       },
       {
         "icon": "🎯",
         "label": "Focus",
-        "value": "Cloud Security + GRC"
+        "value": "Cloud Security, IAM, IaC + GRC"
       },
       {
         "icon": "✈️",
@@ -222,7 +222,7 @@ export const DATA = {
     {
       "degree": "BSc in Information Science",
       "school": "University of Gondar",
-      "meta": "Gondar, Ethiopia — 2016 – 2018",
+      "meta": "Gondar, Ethiopia — 2015 – 2018",
       "status": ""
     }
   ],
@@ -245,7 +245,7 @@ export const DATA = {
     }
   ],
   "contact": {
-    "text": "I'm actively looking for Cloud Security, GRC, and IT Risk roles across Europe — particularly in Germany. Whether you have an opportunity, want to collaborate, or just want to talk security, I'd love to hear from you.",
+    "text": "I'm actively looking for Cloud Security, IAM, GRC, and IT Risk roles across Europe — particularly in Germany. Whether you have an opportunity, want to collaborate, or just want to talk security, I'd love to hear from you.",
     "email": "olanakenea6@gmail.com",
     "linkedin": "https://www.linkedin.com/in/olana-kenea",
     "github": "https://github.com/olanak"
