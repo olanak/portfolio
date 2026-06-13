@@ -252,6 +252,31 @@ export const DATA = {
       ],
       "link": "https://github.com/olanak/aws-nis2-baseline",
       "seriesId": "nis2-landing-zone"
+    },
+    {
+      "icon": "🔧",
+      "title": "NIS2-Compliant AWS Landing Zone",
+      "desc": "An open-source AWS Landing Zone built with Terraform, focused on deploying automated security baselines and robust cloud infrastructure controls to meet strict NIS2 & ISO 27001 Annex A regulatory compliance.",
+      "categories": [
+        "Cloud",
+        "IaC",
+        "GRC"
+      ],
+      "problem": "Eighteen months after NIS2 came into force, almost no public Terraform examples map to it by name — regulated EU teams have CIS and NIST references but nothing tying infrastructure to NIS2 Article 21 obligations.",
+      "approach": "Modular Terraform (KMS, S3, CloudTrail, AWS Config, VPC, Organizations, Identity Center, GuardDuty, Security Hub), each resource tagged to the NIS2 measure and ISO 27001 control it satisfies. Validated free on LocalStack Pro, with a single cost-controlled real-AWS run for evidence.",
+      "outcome": "Auditable control-to-resource traceability, a full CI gauntlet (Checkov, tfsec, Infracost, terraform test) on every PR, and a reproducible landing zone anyone can stand up with one command.",
+      "tech": [
+        "AWS",
+        "NIS2",
+        "CloudSecurity",
+        "LandingZone",
+        "IaC",
+        "Terraform",
+        "DevSecOps",
+        "CI/CD"
+      ],
+      "link": "https://github.com/olanak/aws-nis2-baseline",
+      "seriesId": "nis2-landing-zone"
     }
   ],
   "contact": {
@@ -341,6 +366,22 @@ export const DATA = {
         "ProjectKickoff"
       ],
       "published": true
+    },
+    {
+      "id": "post-1781381186343",
+      "title": "Building a NIS2-Compliant AWS Landing Zone — Week 1: Foundations",
+      "date": "2026-06-13",
+      "excerpt": "KMS and S3 baseline modules, native terraform test, the full CI pipeline, and branch protection — the groundwork everything else builds on.",
+      "content": "*Previously in this series: I laid out a six-week plan to build an open-source AWS landing zone in Terraform, mapped to NIS2 Article 21 and ISO 27001:2022, developed entirely on LocalStack at zero cost. This is Week 1's build journal — where the foundation gets poured.*\n\nBy the end of Week 1 the repository had two composed Terraform modules, nine automated tests, seven CI checks running on every pull request, and branch protection refusing any direct push to `main`. None of that is glamorous. All of it is the part most portfolio projects skip — and the part a security reviewer actually checks.\n\nHere is how it came together, and the one principle that shaped every decision after it.\n\n## The principle: managed risk, not zero-findings theater\n\nMost \"secure infrastructure\" demos chase a clean scanner dashboard. Every finding suppressed, every badge green, nothing to see. That is theater. A real security posture has open findings — each one *seen*, *judged*, and *recorded* with a reason.\n\nSo before writing a single resource, I set the rule: every scanner finding gets one of four labels — **Fixed**, **Deferred** (with a target), **Accepted** (out of scope, per a written decision), or **Suppressed** (with an inline reason in the code). The decision matrix that records those calls is the actual compliance artifact. The green badge is just the side effect of doing that honestly.\n\nThat rule is why this project has a decision matrix at all, and why later weeks were calm instead of frantic.\n\n## Two modules, one interface\n\nWeek 1 ships two modules: a KMS key and a secure-by-default S3 bucket. The interesting part is not either module alone — it is how they compose.\n\n<img src='/blog/week 1.png' alt='week 1' style='width:100%;border-radius:12px' />\n\nThe KMS module outputs a `key_arn`. The S3 module takes a `kms_key_arn` input. The composition root wires one into the other:\n\n```\nmodule \"kms_s3_baseline\" {\n  source = \"../../modules/kms\"\n  # ... CMK with rotation, alias, regulatory tags\n}\n\nmodule \"s3_baseline_logs\" {\n  source      = \"../../modules/s3-baseline\"\n  kms_key_arn = module.kms_s3_baseline.key_arn   # the composition moment\n  # ...\n}\n```\n\nThat single line — `module.kms_s3_baseline.key_arn` flowing into the bucket — is the architectural idea the whole project is built on. Small modules with clear interfaces, composed at the root, beat one monolithic module every time. Week 2 leans on this hard.\n\n## The S3 baseline: secure by default\n\nThe bucket module is not just \"a bucket.\" It refuses to exist in an insecure state:\n\n- **SSE-KMS encryption** using the customer-managed key (not the AWS-managed default)\n- **A four-dimension public access block** — block public ACLs, ignore public ACLs, block public policy, restrict public buckets\n- **A TLS-only bucket policy** that denies any request not using HTTPS\n- **Versioning** enabled by default\n- **Lifecycle rules** gated behind a variable\n\nThe TLS-only deny is worth showing, because it is the kind of control NIS2 expects and most tutorials omit:\n\n```\n{\n  Sid       = \"DenyInsecureTransport\"\n  Effect    = \"Deny\"\n  Principal = \"*\"\n  Action    = \"s3:*\"\n  Resource  = [bucket_arn, \"${bucket_arn}/*\"]\n  Condition = { Bool = { \"aws:SecureTransport\" = \"false\" } }\n}\n```\n\n`Principal = \"*\"` in a **Deny** is the strictest possible scope — it denies everyone who isn't using TLS, including future callers I haven't thought of yet. A scanner will flag that wildcard. It is correct, and it goes in the decision matrix as Accepted-with-reason rather than \"fixed\" into something weaker.\n\n## Testing what you can't see\n\nTwo modules deserve more than \"it applied without erroring.\" Native `terraform test` lets you assert on the plan and on a real apply against LocalStack. Two kinds of test matter:\n\n**Positive tests** confirm the happy path: rotation is enabled, the four public-access dimensions are all true, encryption uses the provided CMK.\n\n**Negative tests** confirm the guardrails actually bite. The most valuable test in Week 1 asserts that an *invalid* input is rejected:\n\n```hcl\nrun \"rejects_invalid_bucket_name\" {\n  command = plan\n  variables { bucket_name = \"Invalid_Name_With_Caps\" }\n  expect_failures = [var.bucket_name]\n}\n```\n\nA test that proves the validation blocks bad input is worth more than three that prove the good path works. Anyone can make the happy path pass.\n\n## The CI pipeline: the source of truth\n\n\"Works on my machine\" is a smell. Every check that matters runs in CI on every PR, and branch protection makes it impossible to merge around them:\n\n| Stage | What it does |\n| --- | --- |\n| `terraform fmt` | Formatting is non-negotiable, enforced not requested |\n| `tflint` | Catches provider-specific mistakes static parsing misses |\n| `tfsec` | Security scan — findings flow to the decision matrix |\n| `checkov` | Second security scan — different rule coverage |\n| `terraform test` | The module + integration suites actually run |\n| `infracost` | Cost projection commented on the PR |\n| `terraform-docs` | Module READMEs auto-generated on merge |\n\nThe security scanners run in **soft-fail** mode: they report findings but do not block the merge. That is the managed-risk principle in the pipeline itself — the human judgment recorded in the decision matrix is the gate, not a binary scanner exit code.\n\n## What broke (the honest part)\n\nNo foundation pours cleanly. The failures in Week 1 all lived in the gap between \"works locally\" and \"works in CI\":\n\n- **`terraform test` needs its provider config inside the test's own wiring file** — a separate `provider.tf` in the test directory wasn't reliably picked up.\n- **CI runs containers as a different user than the steps around them** — auto-generated docs couldn't be committed until the workspace ownership was normalized.\n- **Branch protection broke the docs automation** — a workflow that pushed directly to `main` started getting rejected the moment protection went on, which forced a cleaner bot-PR pattern.\n\nEach of these is a small story, and each one became an Architecture Decision Record in the repo. The failures are the part worth reading — they are where the real learning is.\n\n## NIS2 coverage after Week 1\n\n| Resource | NIS2 Art. 21(2) | ISO 27001:2022 |\n| --- | --- | --- |\n| KMS CMK + rotation | (h) cryptography | A.8.24 |\n| S3 SSE-KMS encryption | (h) cryptography | A.8.24 |\n| S3 versioning | (c) business continuity | A.8.13 |\n| TLS-only bucket policy | (h) cryptography | A.8.24 |\n| Public access block | (i) access control | A.8.3 |\n\nFive control mappings from two modules. Every resource in the repo carries tags naming the NIS2 measure and ISO control it satisfies — so the compliance mapping is generated from the infrastructure itself, not maintained as a separate spreadsheet that drifts out of date.\n\n## Where this leaves us\n\nTwo modules, composed through a clean interface. Tests that prove the guardrails bite. A CI pipeline that is the real source of truth, with a decision matrix instead of a vanity dashboard. A foundation, in other words.\n\n*Next week in this series: the logging layer. CloudTrail with log file validation, AWS Config for continuous compliance, and VPC Flow Logs for network audit — plus the moment the project hit its first \"that's a paid feature\" wall and what I did about it.*",
+      "tags": [
+        "AWS",
+        "Terraform",
+        "KMS",
+        "CI/CD"
+      ],
+      "published": true,
+      "seriesId": "nis2-landing-zone",
+      "part": 1
     }
   ]
 };

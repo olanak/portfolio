@@ -68,11 +68,59 @@ export function postNav(data, post) {
 }
 
 // ===== MARKDOWN PARSER =====
+// Light inline formatting used inside table cells (escape, then code/bold/italic/links)
+function mdInline(t) {
+  return t
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+    .replace(/`([^`]+)`/g, '<code class="md-code">$1</code>')
+    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*(.+?)\*/g, '<em>$1</em>')
+    .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noreferrer">$1</a>');
+}
+
+function splitRow(l) {
+  return l.trim().replace(/^\|/, '').replace(/\|$/, '').split('|').map(c => c.trim());
+}
+
 export function md(s) {
   if (!s) return '';
-  let h = s
-    .replace(/```([\s\S]*?)```/g, (_, c) => `<pre class="md-pre"><code>${c.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</code></pre>`)
-    .replace(/`([^`]+)`/g, '<code class="md-code">$1</code>')
+  const blocks = [], tables = [], inls = [];
+
+  // 1. Pull fenced code blocks out first (strip language tag, escape HTML)
+  let h = s.replace(/```(\w*)\n?([\s\S]*?)```/g, (_, lang, c) => {
+    const esc = c.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/\n$/, '');
+    return `\u0000B${blocks.push(`<pre class="md-pre"><code>${esc}</code></pre>`) - 1}\u0000`;
+  });
+
+  // 2. Detect GitHub-style tables (header row, |---| separator, body rows)
+  const isRow = l => /^\s*\|.+\|\s*$/.test(l);
+  const isSep = l => /\|/.test(l) && /-/.test(l) && /^\s*\|?[\s:|-]+\|?\s*$/.test(l);
+  const lines = h.split('\n');
+  const out = [];
+  for (let i = 0; i < lines.length; i++) {
+    if (isRow(lines[i]) && i + 1 < lines.length && isSep(lines[i + 1])) {
+      const header = splitRow(lines[i]);
+      i += 2;
+      const rows = [];
+      while (i < lines.length && isRow(lines[i])) { rows.push(splitRow(lines[i])); i++; }
+      i--; // step back; loop will increment
+      const thead = '<thead><tr>' + header.map(c => `<th>${mdInline(c)}</th>`).join('') + '</tr></thead>';
+      const tbody = '<tbody>' + rows.map(r => '<tr>' + r.map(c => `<td>${mdInline(c)}</td>`).join('') + '</tr>').join('') + '</tbody>';
+      out.push(`\u0000T${tables.push(`<table class="md-table">${thead}${tbody}</table>`) - 1}\u0000`);
+    } else {
+      out.push(lines[i]);
+    }
+  }
+  h = out.join('\n');
+
+  // 3. Pull inline code out (outside tables/code blocks)
+  h = h.replace(/`([^`]+)`/g, (_, c) => {
+    const esc = c.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    return `\u0000I${inls.push(`<code class="md-code">${esc}</code>`) - 1}\u0000`;
+  });
+
+  // 4. Block + inline transforms
+  h = h
     .replace(/^### (.+)$/gm, '<h3>$1</h3>')
     .replace(/^## (.+)$/gm, '<h2>$1</h2>')
     .replace(/^# (.+)$/gm, '<h1>$1</h1>')
@@ -84,6 +132,13 @@ export function md(s) {
     .replace(/^\d+\. (.+)$/gm, '<li>$1</li>')
     .replace(/^- (.+)$/gm, '<li>$1</li>');
   h = h.replace(/(<li>.*<\/li>\n?)+/g, m => `<ul>${m}</ul>`);
-  h = h.replace(/^(?!<[hluobp]|<\/|<hr|<pre|<code)(.+)$/gm, '<p>$1</p>');
+
+  // 5. Wrap remaining bare lines in <p> (skip tags + placeholders)
+  h = h.replace(/^(?!<[hluobp]|<\/|<hr|<pre|<code|\u0000)(.+)$/gm, '<p>$1</p>');
+
+  // 6. Restore protected blocks
+  h = h.replace(/\u0000T(\d+)\u0000/g, (_, i) => tables[+i]);
+  h = h.replace(/\u0000B(\d+)\u0000/g, (_, i) => blocks[+i]);
+  h = h.replace(/\u0000I(\d+)\u0000/g, (_, i) => inls[+i]);
   return h;
 }

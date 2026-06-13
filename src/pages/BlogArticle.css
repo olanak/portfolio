@@ -31,3 +31,9 @@
 .ba-sn-t { font-size:14px;font-weight:600;color:var(--text);line-height:1.4 }
 .ba-sn-spacer { display:block }
 @media (max-width:560px){ .ba-sn-row{grid-template-columns:1fr} .ba-sn-link.next{text-align:left} }
+
+.ba-body .md-table { width:100%;border-collapse:collapse;margin:24px 0;font-size:14px }
+.ba-body .md-table th, .ba-body .md-table td { border:1px solid var(--border);padding:10px 14px;text-align:left;vertical-align:top }
+.ba-body .md-table th { background:var(--bg-alt);font-weight:600;color:var(--text);font-family:var(--mono);font-size:12px }
+.ba-body .md-table td { color:var(--text-2) }
+.ba-body .md-table tr:nth-child(even) td { background:var(--bg-alt) }
