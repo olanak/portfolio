@@ -1,28 +1,18 @@
-<<<<<<< HEAD
 import { useEffect, useState, Fragment } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { CyberCanvas, Tilt, Reveal, Counter } from '../components/Shared';
 import { landingEntries } from '../utils';
-=======
-import { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { CyberCanvas, Tilt, Reveal, Counter } from '../components/Shared';
->>>>>>> 704eb1b588ea1cdee9c451cdaeca688355a9a403
 import './Portfolio.css';
 
 export default function Portfolio({ data }) {
   const nav = useNavigate();
   const { hero, about, skills, experience, certifications, education, projects, contact, blogs } = data;
-<<<<<<< HEAD
   const pub = landingEntries(data);
 
   const [projFilter, setProjFilter] = useState('All');
   const [openProj, setOpenProj] = useState(null);
   const projCats = ['All', ...Array.from(new Set(projects.flatMap(p => p.categories || [])))];
   const shownProjects = projFilter === 'All' ? projects : projects.filter(p => (p.categories || []).includes(projFilter));
-=======
-  const pub = blogs.filter(b => b.published);
->>>>>>> 704eb1b588ea1cdee9c451cdaeca688355a9a403
 
   // Nav scroll
   useEffect(() => {
@@ -78,15 +68,11 @@ export default function Portfolio({ data }) {
               <a href="#contact" className="btn btn-p" onClick={e => { e.preventDefault(); document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' }); }}>→ Get in Touch</a>
               <a href="#projects" className="btn btn-o" onClick={e => { e.preventDefault(); document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' }); }}>View Projects</a>
               <a href={hero.githubUrl} target="_blank" rel="noreferrer" className="btn btn-g">GitHub ↗</a>
-<<<<<<< HEAD
               {hero.cvUrl && <a href={hero.cvUrl} download className="btn btn-cv">⬇ Download CV</a>}
-=======
->>>>>>> 704eb1b588ea1cdee9c451cdaeca688355a9a403
             </div>
           </Reveal>
           <Reveal delay={650}>
             <div className="hero-stats">
-<<<<<<< HEAD
               {about.stats.map((s, i) => {
                 const m = String(s.number).match(/^(\d+)(.*)$/);
                 return (
@@ -99,15 +85,6 @@ export default function Portfolio({ data }) {
                   </Fragment>
                 );
               })}
-=======
-              <div className="hs"><span className="hs-n"><Counter end={6} suffix="+" /></span><span className="hs-l">Years in IT</span></div>
-              <div className="hs-sep" />
-              <div className="hs"><span className="hs-n"><Counter end={3} /></span><span className="hs-l">Certifications</span></div>
-              <div className="hs-sep" />
-              <div className="hs"><span className="hs-n"><Counter end={2} /></span><span className="hs-l">Master's Degrees</span></div>
-              <div className="hs-sep" />
-              <div className="hs"><span className="hs-n"><Counter end={40} suffix="+" /></span><span className="hs-l">Skills</span></div>
->>>>>>> 704eb1b588ea1cdee9c451cdaeca688355a9a403
             </div>
           </Reveal>
         </div>
@@ -211,7 +188,6 @@ export default function Portfolio({ data }) {
       <section id="projects" className="sec sec-alt">
         <Reveal><span className="stag">Projects</span></Reveal>
         <Reveal delay={80}><h2 className="sh">What I've <span className="grad-text">Built</span></h2></Reveal>
-<<<<<<< HEAD
 
         {projCats.length > 2 && (
           <Reveal delay={120}>
@@ -261,20 +237,6 @@ export default function Portfolio({ data }) {
               </Reveal>
             );
           })}
-=======
-        <div className="proj-grid">
-          {projects.map((p, i) => (
-            <Reveal key={i} delay={i * 100}>
-              <Tilt className="proj-card">
-                <div className="proj-num">0{i + 1}</div>
-                <h3 className="proj-t">{p.title}</h3>
-                <p className="proj-d">{p.desc}</p>
-                <div className="proj-tech">{p.tech.map(t => <span key={t}>{t}</span>)}</div>
-                {p.link && <a href={p.link} target="_blank" rel="noreferrer" className="proj-link">View on GitHub ↗</a>}
-              </Tilt>
-            </Reveal>
-          ))}
->>>>>>> 704eb1b588ea1cdee9c451cdaeca688355a9a403
         </div>
       </section>
 
@@ -286,7 +248,6 @@ export default function Portfolio({ data }) {
           <Reveal delay={150}><div className="empty-box">🔒 Blog posts coming soon — stay tuned.</div></Reveal>
         ) : (
           <div className="blog-grid">
-<<<<<<< HEAD
             {pub.map((e, i) => (
               <Reveal key={e.id} delay={i * 100}>
                 <Tilt className="blog-card" style={{ cursor: 'pointer' }}>
@@ -299,17 +260,6 @@ export default function Portfolio({ data }) {
                     <p className="blog-ex">{e.excerpt}</p>
                     <div className="blog-tags">{(e.tags || []).map((t, j) => <span key={j}>{t}</span>)}</div>
                     <span className="blog-more">{e.type === 'series' ? `View series · ${e.written} published →` : 'Read more →'}</span>
-=======
-            {pub.map((b, i) => (
-              <Reveal key={i} delay={i * 100}>
-                <Tilt className="blog-card" style={{ cursor: 'pointer' }}>
-                  <div onClick={() => nav(`/blog/${b.id}`)}>
-                    <span className="blog-date">{b.date}</span>
-                    <h3 className="blog-t">{b.title}</h3>
-                    <p className="blog-ex">{b.excerpt}</p>
-                    <div className="blog-tags">{(b.tags || []).map((t, j) => <span key={j}>{t}</span>)}</div>
-                    <span className="blog-more">Read more →</span>
->>>>>>> 704eb1b588ea1cdee9c451cdaeca688355a9a403
                   </div>
                 </Tilt>
               </Reveal>
