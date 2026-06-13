@@ -1,9 +1,5 @@
 import { useParams, useNavigate } from 'react-router-dom';
-<<<<<<< HEAD
 import { md, postNav } from '../utils';
-=======
-import { md } from '../utils';
->>>>>>> 704eb1b588ea1cdee9c451cdaeca688355a9a403
 import './BlogArticle.css';
 
 export default function BlogArticle({ data }) {
@@ -25,7 +21,6 @@ export default function BlogArticle({ data }) {
       <h1 className="ba-title">{blog.title}</h1>
       <div className="ba-tags">{(blog.tags || []).map((t, i) => <span key={i}>{t}</span>)}</div>
       <article className="ba-body" dangerouslySetInnerHTML={{ __html: md(blog.content) }} />
-<<<<<<< HEAD
       <SeriesNav data={data} blog={blog} nav={nav} />
     </div>
   );
@@ -57,8 +52,3 @@ function SeriesNav({ data, blog, nav }) {
     </nav>
   );
 }
-=======
-    </div>
-  );
-}
->>>>>>> 704eb1b588ea1cdee9c451cdaeca688355a9a403

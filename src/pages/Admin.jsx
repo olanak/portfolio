@@ -207,13 +207,10 @@ function BlogsEd({ data, save }) {
         <F l="Tags (comma-sep)" v={(b.tags||[]).join(', ')} onChange={v => u('tags', v.split(',').map(s=>s.trim()).filter(Boolean))} />
       </div>
       <F l="Excerpt" v={b.excerpt} onChange={v => u('excerpt', v)} ta />
-<<<<<<< HEAD
       <div className="a2c">
         <F l="Series ID (optional — groups posts, e.g. nis2-landing-zone)" v={b.seriesId || ''} onChange={v => u('seriesId', v.trim() || undefined)} />
         <div className="afg"><label className="al">Part # (order within series)</label><input className="ai" type="number" value={b.part ?? ''} onChange={e => u('part', e.target.value === '' ? undefined : Number(e.target.value))} /></div>
       </div>
-=======
->>>>>>> 704eb1b588ea1cdee9c451cdaeca688355a9a403
       <label className="al">Content (Markdown)</label>
       <div className="mde">
         <div className="mde-p"><div className="mde-h">✎ Editor</div><textarea className="mde-ta" value={b.content} onChange={e => u('content', e.target.value)} /></div>
