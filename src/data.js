@@ -252,31 +252,6 @@ export const DATA = {
       ],
       "link": "https://github.com/olanak/aws-nis2-baseline",
       "seriesId": "nis2-landing-zone"
-    },
-    {
-      "icon": "🔧",
-      "title": "NIS2-Compliant AWS Landing Zone",
-      "desc": "An open-source AWS Landing Zone built with Terraform, focused on deploying automated security baselines and robust cloud infrastructure controls to meet strict NIS2 & ISO 27001 Annex A regulatory compliance.",
-      "categories": [
-        "Cloud",
-        "IaC",
-        "GRC"
-      ],
-      "problem": "Eighteen months after NIS2 came into force, almost no public Terraform examples map to it by name — regulated EU teams have CIS and NIST references but nothing tying infrastructure to NIS2 Article 21 obligations.",
-      "approach": "Modular Terraform (KMS, S3, CloudTrail, AWS Config, VPC, Organizations, Identity Center, GuardDuty, Security Hub), each resource tagged to the NIS2 measure and ISO 27001 control it satisfies. Validated free on LocalStack Pro, with a single cost-controlled real-AWS run for evidence.",
-      "outcome": "Auditable control-to-resource traceability, a full CI gauntlet (Checkov, tfsec, Infracost, terraform test) on every PR, and a reproducible landing zone anyone can stand up with one command.",
-      "tech": [
-        "AWS",
-        "NIS2",
-        "CloudSecurity",
-        "LandingZone",
-        "IaC",
-        "Terraform",
-        "DevSecOps",
-        "CI/CD"
-      ],
-      "link": "https://github.com/olanak/aws-nis2-baseline",
-      "seriesId": "nis2-landing-zone"
     }
   ],
   "contact": {
