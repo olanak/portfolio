@@ -152,6 +152,7 @@
   .hs-sep { display:none }
   .sec { padding:50px 20px }
 }
+<<<<<<< HEAD
 
 /* ===== SERIES CARD (blog landing) ===== */
 .blog-meta-row { display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:6px }
@@ -178,3 +179,5 @@
 .proj-actions .proj-link { margin-top:0 }
 .proj-toggle { font-family:var(--mono);font-size:12px;font-weight:500;color:var(--text-3);background:none;border:1px dashed var(--border);border-radius:8px;padding:5px 12px;cursor:pointer;transition:all .2s }
 .proj-toggle:hover { color:var(--primary);border-color:var(--primary-light) }
+=======
+>>>>>>> 704eb1b588ea1cdee9c451cdaeca688355a9a403
