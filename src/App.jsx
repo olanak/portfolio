@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { Routes, Route, useNavigate } from 'react-router-dom';
+import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import { DATA } from './data';
 import { store } from './utils';
 import Portfolio from './pages/Portfolio';
@@ -7,6 +7,13 @@ import BlogArticle from './pages/BlogArticle';
 import SeriesIndex from './pages/SeriesIndex';
 import AdminLogin from './pages/AdminLogin';
 import Admin from './pages/Admin';
+
+// Reset scroll to top on every route change (but not on in-page #hash nav)
+function ScrollToTop() {
+  const { pathname } = useLocation();
+  useEffect(() => { window.scrollTo(0, 0); }, [pathname]);
+  return null;
+}
 
 export default function App() {
   const [data, setData] = useState(null);
@@ -16,7 +23,6 @@ export default function App() {
   const nav = useNavigate();
 
   useEffect(() => {
-    // Handle GitHub Pages SPA redirect
     const redirect = sessionStorage.getItem('redirect');
     if (redirect) {
       sessionStorage.removeItem('redirect');
@@ -28,18 +34,14 @@ export default function App() {
     const s = store.load();
     let d;
     if (s) {
-      // Deep merge with defaults to handle missing fields from old data
       d = { ...DATA, ...s };
       d.about = { ...DATA.about, ...s.about };
-      // Ensure bio is array format
       if (d.about.bio && !Array.isArray(d.about.bio)) {
         d.about.bio = d.about.bio.split('\n\n');
       }
-      // Ensure infos exists
       if (!d.about.infos) d.about.infos = DATA.about.infos;
       if (!d.about.stats) d.about.stats = DATA.about.stats;
       d.blogs = s.blogs || DATA.blogs;
-      // Ensure experience items have location
       if (d.experience) {
         d.experience = d.experience.map((e, i) => ({ ...DATA.experience[i], ...e }));
       }
@@ -53,7 +55,6 @@ export default function App() {
     setLoading(false);
   }, []);
 
-  // Secret: type "admin" on keyboard
   useEffect(() => {
     let buf = '', timer;
     const handler = e => {
@@ -96,6 +97,7 @@ export default function App() {
   return (
     <>
       {toast && <div className={`toast toast-${toast.ok ? 'ok' : 'err'}`}>{toast.msg}</div>}
+      <ScrollToTop />
       <Routes>
         <Route path="/" element={<Portfolio data={data} />} />
         <Route path="/blog/:slug" element={<BlogArticle data={data} />} />
