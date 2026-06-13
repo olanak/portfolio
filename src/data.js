@@ -31,7 +31,7 @@ export const DATA = {
     ],
     "stats": [
       {
-        "number": "6+",
+        "number": "4+",
         "label": "Years in IT"
       },
       {
@@ -218,13 +218,13 @@ export const DATA = {
       "degree": "MSc in Computer Networking",
       "school": "Jimma University",
       "meta": "Jimma, Ethiopia — 2019 – 2023",
-      "status": ""
+      "status": "Completed"
     },
     {
       "degree": "BSc in Information Science",
       "school": "University of Gondar",
       "meta": "Gondar, Ethiopia — 2015 – 2018",
-      "status": ""
+      "status": "Completed"
     }
   ],
   "projects": [
