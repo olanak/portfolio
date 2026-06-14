@@ -31,27 +31,28 @@ export default function App() {
   }, [nav]);
 
   useEffect(() => {
-    const s = store.load();
-    let d;
-    if (s) {
-      d = { ...DATA, ...s };
-      d.about = { ...DATA.about, ...s.about };
-      if (d.about.bio && !Array.isArray(d.about.bio)) {
-        d.about.bio = d.about.bio.split('\n\n');
+    const a = store.loadAuth();
+    const isAdmin = !!a?.loggedIn;
+
+    // Public visitors ALWAYS see the deployed data.js (single source of truth).
+    // localStorage drafts are applied only for the logged-in admin previewing edits.
+    let d = DATA;
+    if (isAdmin) {
+      const s = store.load();
+      if (s) {
+        d = { ...DATA, ...s };
+        d.about = { ...DATA.about, ...s.about };
+        if (d.about.bio && !Array.isArray(d.about.bio)) d.about.bio = d.about.bio.split('\n\n');
+        if (!d.about.infos) d.about.infos = DATA.about.infos;
+        if (!d.about.stats) d.about.stats = DATA.about.stats;
+        d.blogs = s.blogs || DATA.blogs;
+        if (s.series) d.series = s.series;
+        if (s.projects) d.projects = s.projects;
+        if (d.experience) d.experience = d.experience.map((e, i) => ({ ...DATA.experience[i], ...e }));
       }
-      if (!d.about.infos) d.about.infos = DATA.about.infos;
-      if (!d.about.stats) d.about.stats = DATA.about.stats;
-      d.blogs = s.blogs || DATA.blogs;
-      if (d.experience) {
-        d.experience = d.experience.map((e, i) => ({ ...DATA.experience[i], ...e }));
-      }
-    } else {
-      d = DATA;
+      setAuthed(true);
     }
     setData(d);
-    if (!s) store.save(DATA);
-    const a = store.loadAuth();
-    if (a?.loggedIn) setAuthed(true);
     setLoading(false);
   }, []);
 
