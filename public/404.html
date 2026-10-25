@@ -4,8 +4,10 @@
   <meta charset="utf-8">
   <title>Redirecting...</title>
   <script>
-    sessionStorage.setItem('redirect', window.location.pathname + window.location.search);
-    window.location.replace('/');
+    var p = window.location.pathname;
+    var stripped = p.replace(/^\/portfolio(?=\/|$)/, '') || '/';
+    sessionStorage.setItem('redirect', stripped + window.location.search);
+    window.location.replace(p.indexOf('/portfolio/') === 0 ? '/portfolio/' : '/');
   </script>
 </head>
 <body></body>
