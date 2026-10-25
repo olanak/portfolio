@@ -6,7 +6,7 @@
 .si-sub { font-size:15px;color:var(--text-3);margin:0 0 16px;font-family:var(--mono) }
 .si-excerpt { font-size:16px;line-height:1.8;color:var(--text-2);margin:0 0 18px }
 .si-tags { display:flex;flex-wrap:wrap;gap:6px;margin-bottom:36px }
-.si-tags span { font-family:var(--mono);font-size:11px;padding:3px 10px;background:var(--primary-bg);border:1px solid rgba(99,102,241,.12);border-radius:5px;color:var(--primary) }
+.si-tags span { font-family:var(--mono);font-size:11px;padding:3px 10px;background:var(--primary-bg);border:1px solid rgba(56,189,248,.12);border-radius:5px;color:var(--primary) }
 
 .si-list { list-style:none;padding:0;margin:0;counter-reset:none }
 .si-item { display:flex;align-items:flex-start;gap:16px;padding:18px 16px;border:1px solid var(--border);border-radius:12px;margin-bottom:12px;background:var(--bg-alt);transition:border-color .2s, transform .15s }

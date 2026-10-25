@@ -1,3 +1,5 @@
 node_modules
 dist
 .DS_Store
+vite.local.config.js
+dev-server.log

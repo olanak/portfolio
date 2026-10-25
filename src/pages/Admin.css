@@ -45,7 +45,7 @@
 /* Buttons */
 .ab { display:inline-flex;align-items:center;gap:5px;padding:8px 16px;border-radius:var(--radius-sm);font-family:var(--mono);font-size:12px;cursor:pointer;border:1px solid;transition:all .2s;font-weight:500;white-space:nowrap;text-decoration:none }
 .aa { background:var(--gradient);color:#fff;border-color:var(--primary) }
-.aa:hover { box-shadow:0 4px 16px rgba(99,102,241,.25) }
+.aa:hover { box-shadow:0 4px 16px rgba(56,189,248,.25) }
 .ag { background:transparent;color:var(--text-2);border-color:var(--border) }
 .ag:hover { border-color:var(--primary);color:var(--primary) }
 .ad { background:transparent;color:var(--danger);border-color:rgba(239,68,68,.25) }

@@ -2,6 +2,7 @@ export const DATA = {
   "hero": {
     "name": "Olana Kenea Lemesa",
     "tagline": "Cloud Security & IAM Engineer",
+    "summary": "I design and build secure cloud infrastructure and the identity layer that governs it — landing zones, guardrails and least-privilege access, mapped to the regulation that makes them auditable.",
     "tags": [
       "Cloud Security",
       "AWS security",
@@ -142,6 +143,56 @@ export const DATA = {
         "German (A2 → B1)"
       ]
     }
+  ],
+  "focus": [
+    {
+      "num": "01",
+      "title": "Cloud Infrastructure Security",
+      "desc": "Foundations that are secure by default — not by a review that happens later.",
+      "points": [
+        "Multi-account AWS & GCP landing zones with network segmentation",
+        "KMS encryption, key rotation and enforced TLS in transit",
+        "Detective controls: CloudTrail, AWS Config, GuardDuty, Security Hub"
+      ]
+    },
+    {
+      "num": "02",
+      "title": "Identity & Access Management",
+      "desc": "Who can do what, from where, for how long — designed, tested and reviewable.",
+      "points": [
+        "Least-privilege policy design and periodic access reviews",
+        "SSO / Identity Center with MFA and short-lived sessions",
+        "Service Control Policies and permission boundaries as guardrails"
+      ]
+    },
+    {
+      "num": "03",
+      "title": "Infrastructure as Code & DevSecOps",
+      "desc": "Security that ships with the pipeline instead of trailing behind it.",
+      "points": [
+        "Modular Terraform with plan-time validation and native tests",
+        "Policy as code (OPA/Rego, Checkov, tfsec) on every pull request",
+        "Hardened CI/CD, container and Kubernetes baselines"
+      ]
+    },
+    {
+      "num": "04",
+      "title": "GRC & Control Mapping",
+      "desc": "Turning regulation into infrastructure you can deploy, test and show an auditor.",
+      "points": [
+        "NIS2, DORA and EU AI Act mapped to concrete technical controls",
+        "ISO 27001:2022 Annex A and NIST alignment",
+        "Risk assessment, evidence collection and audit support"
+      ]
+    }
+  ],
+  "frameworks": [
+    { "name": "NIS2", "note": "EU cyber resilience" },
+    { "name": "DORA", "note": "Financial services" },
+    { "name": "EU AI Act", "note": "AI risk tiers" },
+    { "name": "ISO 27001", "note": "Annex A controls" },
+    { "name": "NIST CSF", "note": "Risk framework" },
+    { "name": "CIS", "note": "Hardening baselines" }
   ],
   "experience": [
     {

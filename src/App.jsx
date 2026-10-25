@@ -93,7 +93,7 @@ export default function App() {
     nav('/');
   }, [nav]);
 
-  if (loading || !data) return <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', background: '#f8f9fd' }}><span style={{ fontFamily: 'var(--mono)', color: '#6366f1' }}>Loading...</span></div>;
+  if (loading || !data) return <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', background: 'var(--bg)' }}><span style={{ fontFamily: 'var(--mono)', color: 'var(--primary)' }}>Loading...</span></div>;
 
   return (
     <>
